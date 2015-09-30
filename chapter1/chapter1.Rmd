@@ -7,7 +7,7 @@ output: html_document
 
 histgram
 ```{r}
-data <- read.table("r3/dataset/random1.txt")
+data <- read.table("../r3/dataset/random1.txt")
 ## freq=TRUE 絶対数, FALSE 割合
 ## xlab, ylab: x軸またはy軸のラベル
 ## main タイトル
@@ -16,9 +16,9 @@ hist(data[,1], freq=FALSE, xlab="x", ylab="relative frequency", main=" ")
 
 図のレイアウトの決め方
 ```{r}
-x1 <- read.table("r3/dataset/PDA-F.txt", header=T)[,1]
-x2 <- read.table("r3/dataset/PDA-L.txt", header=T)[,1]
-x3 <- read.table("r3/dataset/PDA-S.txt", header=T)[,1]
+x1 <- read.table("../r3/dataset/PDA-F.txt", header=T)[,1]
+x2 <- read.table("../r3/dataset/PDA-L.txt", header=T)[,1]
+x3 <- read.table("../r3/dataset/PDA-S.txt", header=T)[,1]
 # レイアウトを決める
 par(mfrow=c(1,3), oma=c(0,0,0,0) + 0.1, mar=c(4,4,2,2) + 0.1) # omaとmarはconstraints
 hist(x1, freq=FALSE, xlab="x", ylab="relative freq", main="(a)")
@@ -28,12 +28,12 @@ hist(x3, freq=FALSE, xlab="x", ylab="relative freq", main="(c)")
 
 折れ線グラフ
 ```{r}
-data <- read.table("r3/dataset/GDP.txt")
+data <- read.table("../r3/dataset/GDP.txt")
 matplot(data, type="l", xlab="time(year)", ylab="GDP")
 ```
 
 散布図
 ```{r}
-data <- read.table("r3/dataset/INE.txt", header=T)
+data <- read.table("../r3/dataset/INE.txt", header=T)
 plot(data[,1], data[,2], xlab="acreage", ylab="production")
 ```
