@@ -69,13 +69,13 @@ img {
 
 
 <p>Box-Cox変換を使った線形回帰分析</p>
-<pre class="r"><code>library(car) ## box-cox transformation libary
+<pre class="r"><code># data preparation
 data1 &lt;- read.table(&quot;../r3/dataset/INE.txt&quot;, header=T) # data1[,1] 生産量, data1[,2] 作付け面積
 data2 &lt;- read.table(&quot;../r3/dataset/KION.txt&quot;, header=T) # 気温
 
 y &lt;- data1[,1] / data1[,2]
 N &lt;- nrow(data1) # nrowはrowの数を返す
-x &lt;- matrix(1, N, 13) # 12ヶ月分と定数項
+x &lt;- matrix(1, N, 12) # 12ヶ月分
 for (i in 1:N) {
   for (j in 1:10)  { x[i,j] &lt;- data2[i+1, j] }
   for (j in 11:12) { x[i,j] &lt;- data2[i, j]}   
@@ -101,28 +101,48 @@ summary(x)</code></pre>
 ##  Median :17.00   Median :10.40   Median : 3.700   Median :-2.300  
 ##  Mean   :16.87   Mean   :10.42   Mean   : 3.696   Mean   :-2.392  
 ##  3rd Qu.:17.70   3rd Qu.:11.10   3rd Qu.: 4.600   3rd Qu.:-1.000  
-##  Max.   :19.80   Max.   :13.20   Max.   : 7.500   Max.   : 1.900  
-##       V13   
-##  Min.   :1  
-##  1st Qu.:1  
-##  Median :1  
-##  Mean   :1  
-##  3rd Qu.:1  
-##  Max.   :1</code></pre>
-<pre class="r"><code>summary(p1 &lt;- powerTransform(y))</code></pre>
-<pre><code>## bcPower Transformation to Normality 
-## 
-##   Est.Power Std.Err. Wald Lower Bound Wald Upper Bound
-## y    0.6491   0.1378           0.3791           0.9191
-## 
-## Likelihood ratio tests about transformation parameters
-##                             LRT df         pval
-## LR test, lambda = (0) 33.068309  1 8.897722e-09
-## LR test, lambda = (1)  5.469389  1 1.935239e-02</code></pre>
-<pre class="r"><code>#summary(p2 &lt;- powerTransform(x))
+##  Max.   :19.80   Max.   :13.20   Max.   : 7.500   Max.   : 1.900</code></pre>
+<pre class="r"><code>summary(y)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.1169  1.9840  2.6390  3.0230  4.4290  5.5140</code></pre>
+<pre class="r"><code># box-cox regression
+library(car)
+yp &lt;- powerTransform(y)
+yc &lt;- bcPower(y, yp$roundlam)
+func &lt;- lm(yc ~ x)
 
-
-# </code></pre>
+summary(func)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = yc ~ x)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.38374 -0.28276 -0.00512  0.31984  1.15006 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -8.84052    1.08869  -8.120 1.25e-12 ***
+## x1           0.01198    0.03259   0.368  0.71398    
+## x2           0.02396    0.03631   0.660  0.51082    
+## x3           0.03500    0.04001   0.875  0.38379    
+## x4           0.12589    0.04568   2.756  0.00696 ** 
+## x5           0.07410    0.04909   1.509  0.13435    
+## x6           0.14922    0.04920   3.033  0.00309 ** 
+## x7           0.12282    0.03770   3.258  0.00154 ** 
+## x8           0.11914    0.03929   3.033  0.00309 ** 
+## x9           0.06112    0.05040   1.213  0.22808    
+## x10          0.04767    0.05056   0.943  0.34804    
+## x11          0.02832    0.04311   0.657  0.51279    
+## x12          0.04671    0.03421   1.365  0.17524    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4832 on 100 degrees of freedom
+## Multiple R-squared:  0.7202, Adjusted R-squared:  0.6866 
+## F-statistic: 21.45 on 12 and 100 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>AIC(func)</code></pre>
+<pre><code>## [1] 170.5173</code></pre>
 
 
 </div>
